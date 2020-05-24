@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediloan</title>
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='./style.css') }}">
+</head>
+<body>
+<div id="app" class="main">
+    <h1>Loan prediction</h1>
+
+    <!-- Form to enter new data for predictions  -->
+    <form action="{{ url_for('predict') }}" method="POST">
+        <input type="hidden" name="ID" value="0"/><br>
+        <input type="number" name="Age" placeholder="Age" required="required"/><br>
+        <input type="number" name="experience" placeholder="Experience" required="required"/><br>
+        <input type="text" name="income" placeholder="Income" required="required"/><br>
+        <input type="text" name="zipCode" placeholder="Zip Code" required="required"/><br>
+        <input type="number" name="family" placeholder="Family" required="required" min="1"/><br>
+        <input type="number" name="ccAvg" placeholder="CCAvg" required="required" min="0"/><br>
+        <input type="number" name="education" placeholder="Education" required="required" min="1" max="3"/><br>
+        <input type="number" name="mortgage" placeholder="Mortgage" required="required" min="0"/><br>
+        <input type="number" name="securitiesAccount" placeholder="Securities Account" required="required" min="0"
+               max="1"/><br>
+        <input type="number" name="cdAccount" placeholder="CD Account" required="required" min="0" max="1"/><br>
+        <input type="number" name="Online" placeholder="online" required="required" min="0" max="1"/><br>
+        <input type="number" name="creditCard" placeholder="Credit Card" required="required" min="0" max="1"/><br>
+
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    </form>
+
+    <br>
+    <br>
+
+    <div class="result">
+        Prediction result : {{ prediction }}
+    </div>
+</div>
+</body>
+</html>
