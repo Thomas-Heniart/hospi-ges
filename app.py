@@ -6,7 +6,8 @@ from pycaret import classification
 app = Flask(__name__)
 
 model = classification.load_model(model_name='decision_tree_1')
-columns = ["ID", "Age", "Experience", "Income", "ZIP Code", "Family", "CCAvg", "Education", "Mortgage", "Securities Account",
+columns = ["ID", "Age", "Experience", "Income", "ZIP Code", "Family", "CCAvg", "Education", "Mortgage",
+           "Securities Account",
            "CD Account", "Online", "CreditCard"]
 
 
