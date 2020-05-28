@@ -1,0 +1,5 @@
+.env
+/venv
+/.idea
+/.ipynb_checkpoints
+/catboost_info
