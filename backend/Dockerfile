@@ -1,5 +1,5 @@
 # use python container image
-FROM python:3.8-stretch
+FROM python:3.8
 
 # set the working directory of the image filesystem
 WORKDIR /backend
