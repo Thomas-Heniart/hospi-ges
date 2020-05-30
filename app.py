@@ -1,14 +1,16 @@
 from flask import Flask, render_template, request, jsonify
-import numpy as np
-import pandas as pd
 from pycaret import classification
 from dotenv import load_dotenv
 from flask_cors import CORS
 
+import numpy as np
+import pandas as pd
+import requests
+
 load_dotenv()
 
-app = Flask(__name__)
-cors = CORS(app)
+app = Flask(__name__, template_folder="client/dist", static_folder="client/dist/static")
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 model = classification.load_model(model_name='decision_tree_1')
 columns = ["ID", "Age", "Experience", "Income", "ZIP Code", "Family", "CCAvg", "Education", "Mortgage",
@@ -22,7 +24,7 @@ def test():
     return jsonify(res)
 
 
-@app.route('/predict', methods=['POST'])
+@app.route('/api/predict', methods=['POST'])
 def predict():
     form_data = [x for x in request.form.values()]
     form_data = np.array(form_data)
@@ -32,9 +34,12 @@ def predict():
     return render_template('home.html', prediction=prediction)
 
 
-@app.route('/')
-def catch_all():
-    return render_template("home.html")
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    if app.debug:
+        return requests.get('http://localhost:8080/{}'.format(path)).text
+    return render_template("index.html")
 
 
 if __name__ == '__main__':
