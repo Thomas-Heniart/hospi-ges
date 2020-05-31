@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form @submit.prevent="onSubmit">
     <h1>New prediction :</h1>
     <b-field label="Birthday">
       <b-datepicker
@@ -8,11 +8,13 @@
         placeholder="Select your birthday"
         v-model="birthday"
         icon-right="calendar-today"
+        required
       >
       </b-datepicker>
     </b-field>
     <b-field label="Experience">
-      <b-numberinput controls-position="compact" v-model="experience" min="0"></b-numberinput>
+      <b-numberinput controls-position="compact" v-model="experience" min="0"
+                     required></b-numberinput>
     </b-field>
     <b-field label="Annual income">
       <b-input
@@ -22,13 +24,15 @@
         min="0"
         step="any"
         icon-right="currency-usd"
+        required
       ></b-input>
     </b-field>
     <b-field label="Zip code">
-      <b-input v-model="zipCode" placeholder="Home address zip code"></b-input>
+      <b-input v-model="zipCode" placeholder="Home address zip code" required></b-input>
     </b-field>
     <b-field label="Family size">
-      <b-numberinput controls-position="compact" v-model="familySize" min="1"></b-numberinput>
+      <b-numberinput controls-position="compact" v-model="familySize" min="1"
+                     required></b-numberinput>
     </b-field>
     <b-field label="Average spending on credit cards per month">
       <b-input
@@ -38,10 +42,11 @@
         min="0"
         step="any"
         icon-right="currency-usd"
+        required
       ></b-input>
     </b-field>
     <b-field label="Education">
-      <b-select placeholder="Select your education" v-model="education">
+      <b-select placeholder="Select your education" v-model="education" required>
         <option
           v-for="option in options"
           :value="option.id"
@@ -59,6 +64,7 @@
         step="any"
         icon-right="currency-usd"
         placeholder="Mortgage..."
+        required
       ></b-input>
     </b-field>
     <b-field label="Do you have a securities account with the bank?">
@@ -73,14 +79,27 @@
     <b-field label="Do you use a credit card issued by Universal Bank?">
       <b-checkbox v-model="creditCard">{{ creditCardLabel }}</b-checkbox>
     </b-field>
+    <b-button expanded
+              type="is-primary"
+              native-type="submit"
+              :loading="isLoading">
+      Submit
+    </b-button>
+    <b-loading :is-full-page="true" :active.sync="isLoading"></b-loading>
   </form>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import * as predictionAPI from '@/gateway/api/prediction';
+import moment from 'moment';
 
   @Component
 export default class Home extends Vue {
+    isLoading = false;
+
+    accepted: boolean | null = null;
+
     options = [
       {
         id: 1,
@@ -150,11 +169,44 @@ export default class Home extends Vue {
       // eslint-disable-next-line radix
       this.mortgage = parseFloat(newVal) || 0;
     }
+
+    async onSubmit() {
+      this.isLoading = true;
+
+      try {
+        let age = 0;
+
+        if (this.birthday) {
+          age = moment().diff(moment(this.birthday), 'years');
+        }
+
+        const predictionResponse = await predictionAPI.default.newPrediction({
+          age,
+          ccAvg: this.ccAvg,
+          cdAccount: this.cdAccount,
+          creditCard: this.creditCard,
+          education: this.education || 1,
+          experience: this.experience,
+          family: this.familySize,
+          income: this.income,
+          mortgage: this.mortgage,
+          online: this.online,
+          securities: this.securitiesAccount,
+          zipCode: this.zipCode,
+        });
+        this.accepted = predictionResponse.accepted;
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.isLoading = false;
+      }
+    }
 }
 </script>
 
 <style lang="scss">
   form {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;

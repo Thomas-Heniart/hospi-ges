@@ -34,6 +34,21 @@ def predict():
     return render_template('home.html', prediction=prediction)
 
 
+@app.route('/api/prediction', methods=['POST'])
+def prediction():
+    data = request.json
+
+    model_data = [-1, data['age'], data['experience'], data['income'], data['zipCode'], data['family'], data['ccAvg'],
+                  data['education'], data['mortgage'], data['securities'], data['cdAccount'], data['online'],
+                  data['creditCard']]
+    model_data = np.array(model_data)
+    model_data = pd.DataFrame([model_data], columns=columns)
+    accepted = classification.predict_model(model, data=model_data)
+    accepted = bool(accepted.Label[0])
+
+    return jsonify({'accepted': accepted})
+
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
