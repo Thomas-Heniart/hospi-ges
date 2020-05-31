@@ -2,6 +2,8 @@
 
 Identify the potential customers who have a higher probability of purchasing a personal loan.
 
+Test version available [here](https://prediloan.herokuapp.com/)
+
 ## About data in CSV
 
 - ID : unique identifier
@@ -18,8 +20,3 @@ Identify the potential customers who have a higher probability of purchasing a p
 - CDAccount : does the customer have a certificate of deposit with the bank? (1=Yes, 0=No)
 - Online : does the customer use Internet banking facilities (1=Yes, 0=No)
 - CreditCard : does the customer use a credit card issued by Universal Bank? (1=Yes, 0=No)
-
-## TODO
-
-- Add vue js + typescript
-- New model with more variables
